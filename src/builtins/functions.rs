@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 #[cfg(feature = "builtins")]
 use chrono::prelude::*;
-#[cfg(feature = "builtins")]
+#[cfg(feature = "rand")]
 use rand::Rng;
 use serde_json::value::{from_value, to_value, Value};
 
@@ -138,7 +138,7 @@ pub fn throw(args: &HashMap<String, Value>) -> Result<Value> {
     }
 }
 
-#[cfg(feature = "builtins")]
+#[cfg(feature = "rand")]
 pub fn get_random(args: &HashMap<String, Value>) -> Result<Value> {
     let start = match args.get("start") {
         Some(val) => match from_value::<i32>(val.clone()) {
@@ -285,7 +285,7 @@ mod tests {
         assert_eq!(err.to_string(), "Hello");
     }
 
-    #[cfg(feature = "builtins")]
+    #[cfg(feature = "rand")]
     #[test]
     fn get_random_no_start() {
         let mut args = HashMap::new();
@@ -297,7 +297,7 @@ mod tests {
         assert!(res.as_i64().unwrap() < 10);
     }
 
-    #[cfg(feature = "builtins")]
+    #[cfg(feature = "rand")]
     #[test]
     fn get_random_with_start() {
         let mut args = HashMap::new();

@@ -6,23 +6,23 @@ use regex::{Captures, Regex};
 use serde_json::value::{to_value, Value};
 use unic_segment::GraphemeIndices;
 
-#[cfg(feature = "builtins")]
+#[cfg(feature = "percent-encoding")]
 use percent_encoding::{percent_encode, AsciiSet, NON_ALPHANUMERIC};
 
 use crate::errors::{Error, Result};
 use crate::utils;
 
 /// https://url.spec.whatwg.org/#fragment-percent-encode-set
-#[cfg(feature = "builtins")]
+#[cfg(feature = "percent-encoding")]
 const FRAGMENT_ENCODE_SET: &AsciiSet =
     &percent_encoding::CONTROLS.add(b' ').add(b'"').add(b'<').add(b'>').add(b'`');
 
 /// https://url.spec.whatwg.org/#path-percent-encode-set
-#[cfg(feature = "builtins")]
+#[cfg(feature = "percent-encoding")]
 const PATH_ENCODE_SET: &AsciiSet = &FRAGMENT_ENCODE_SET.add(b'#').add(b'?').add(b'{').add(b'}');
 
 /// https://url.spec.whatwg.org/#userinfo-percent-encode-set
-#[cfg(feature = "builtins")]
+#[cfg(feature = "percent-encoding")]
 const USERINFO_ENCODE_SET: &AsciiSet = &PATH_ENCODE_SET
     .add(b'/')
     .add(b':')
@@ -38,7 +38,7 @@ const USERINFO_ENCODE_SET: &AsciiSet = &PATH_ENCODE_SET
 /// Same as Python quote
 /// https://github.com/python/cpython/blob/da27d9b9dc44913ffee8f28d9638985eaaa03755/Lib/urllib/parse.py#L787
 /// with `/` not escaped
-#[cfg(feature = "builtins")]
+#[cfg(feature = "percent-encoding")]
 const PYTHON_ENCODE_SET: &AsciiSet = &USERINFO_ENCODE_SET
     .remove(b'/')
     .add(b':')
@@ -214,7 +214,7 @@ pub fn capitalize(value: &Value, _: &HashMap<String, Value>) -> Result<Value> {
 }
 
 /// Percent-encodes reserved URI characters
-#[cfg(feature = "builtins")]
+#[cfg(feature = "percent-encoding")]
 pub fn urlencode(value: &Value, _: &HashMap<String, Value>) -> Result<Value> {
     let s = try_get_value!("urlencode", "value", String, value);
     let encoded = percent_encode(s.as_bytes(), &PYTHON_ENCODE_SET).to_string();
@@ -222,7 +222,7 @@ pub fn urlencode(value: &Value, _: &HashMap<String, Value>) -> Result<Value> {
 }
 
 /// Percent-encodes all non-alphanumeric characters
-#[cfg(feature = "builtins")]
+#[cfg(feature = "percent-encoding")]
 pub fn urlencode_strict(value: &Value, _: &HashMap<String, Value>) -> Result<Value> {
     let s = try_get_value!("urlencode_strict", "value", String, value);
     let encoded = percent_encode(s.as_bytes(), &NON_ALPHANUMERIC).to_string();
@@ -236,7 +236,7 @@ pub fn addslashes(value: &Value, _: &HashMap<String, Value>) -> Result<Value> {
 }
 
 /// Transform a string into a slug
-#[cfg(feature = "builtins")]
+#[cfg(feature = "slug")]
 pub fn slugify(value: &Value, _: &HashMap<String, Value>) -> Result<Value> {
     let s = try_get_value!("slugify", "value", String, value);
     Ok(to_value(&slug::slugify(s)).unwrap())
@@ -582,7 +582,7 @@ mod tests {
         }
     }
 
-    #[cfg(feature = "builtins")]
+    #[cfg(feature = "slug")]
     #[test]
     fn test_slugify() {
         // slug crate already has tests for general slugification so we just
@@ -596,7 +596,7 @@ mod tests {
         }
     }
 
-    #[cfg(feature = "builtins")]
+    #[cfg(feature = "percent-encoding")]
     #[test]
     fn test_urlencode() {
         let tests = vec![
@@ -620,7 +620,7 @@ mod tests {
         }
     }
 
-    #[cfg(feature = "builtins")]
+    #[cfg(feature = "percent-encoding")]
     #[test]
     fn test_urlencode_strict() {
         let tests = vec![

@@ -1,7 +1,7 @@
 /// Filters operating on numbers
 use std::collections::HashMap;
 
-#[cfg(feature = "builtins")]
+#[cfg(feature = "humansize")]
 use humansize::{file_size_opts, FileSize};
 use serde_json::value::{to_value, Value};
 
@@ -60,7 +60,7 @@ pub fn round(value: &Value, args: &HashMap<String, Value>) -> Result<Value> {
 }
 
 /// Returns a human-readable file size (i.e. '110 MB') from an integer
-#[cfg(feature = "builtins")]
+#[cfg(feature = "humansize")]
 pub fn filesizeformat(value: &Value, _: &HashMap<String, Value>) -> Result<Value> {
     let num = try_get_value!("filesizeformat", "value", usize, value);
     num.file_size(file_size_opts::CONVENTIONAL)
@@ -170,7 +170,7 @@ mod tests {
         assert_eq!(result.unwrap(), to_value(2.9).unwrap());
     }
 
-    #[cfg(feature = "builtins")]
+    #[cfg(feature = "humansize")]
     #[test]
     fn test_filesizeformat() {
         let args = HashMap::new();

@@ -580,13 +580,13 @@ impl Tera {
         self.register_filter("linebreaksbr", string::linebreaksbr);
         self.register_filter("striptags", string::striptags);
         self.register_filter("spaceless", string::spaceless);
-        #[cfg(feature = "builtins")]
+        #[cfg(feature = "percent-encoding")]
         self.register_filter("urlencode", string::urlencode);
-        #[cfg(feature = "builtins")]
+        #[cfg(feature = "percent-encoding")]
         self.register_filter("urlencode_strict", string::urlencode_strict);
         self.register_filter("escape", string::escape_html);
         self.register_filter("escape_xml", string::escape_xml);
-        #[cfg(feature = "builtins")]
+        #[cfg(feature = "slug")]
         self.register_filter("slugify", string::slugify);
         self.register_filter("addslashes", string::addslashes);
         self.register_filter("split", string::split);
@@ -608,7 +608,7 @@ impl Tera {
         self.register_filter("pluralize", number::pluralize);
         self.register_filter("round", number::round);
 
-        #[cfg(feature = "builtins")]
+        #[cfg(feature = "humansize")]
         self.register_filter("filesizeformat", number::filesizeformat);
 
         self.register_filter("length", common::length);
@@ -642,7 +642,7 @@ impl Tera {
         #[cfg(feature = "builtins")]
         self.register_function("now", functions::now);
         self.register_function("throw", functions::throw);
-        #[cfg(feature = "builtins")]
+        #[cfg(feature = "rand")]
         self.register_function("get_random", functions::get_random);
         self.register_function("get_env", functions::get_env);
     }
